@@ -1,16 +1,22 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path'); // <-- Agregamos 'path' aquí
 require('dotenv').config();
-const db = require('./config/db'); // Esto llama a tu archivo de conexión para probarla
+const db = require('./config/db'); 
 
 const app = express();
 
 // Middlewares esenciales
 app.use(cors());
-app.use(express.json()); // Permite recibir datos de tus formularios en la SPA
+app.use(express.json()); 
 
-// Servir los archivos del Frontend (SPA)
-app.use(express.static('public'));
+// 🚀 Servir archivos estáticos con la ruta exacta para Vercel
+app.use(express.static(path.join(__dirname, 'public')));
+
+// 🚀 Forzar a que la ruta principal cargue tu interfaz
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // Importar y usar las rutas de los catálogos
 const catalogosRoutes = require('./routes/catalogos');
